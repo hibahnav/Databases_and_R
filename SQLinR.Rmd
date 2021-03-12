@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Now let's try SQL in R using R Notebooks! 
+
+```{r}
+library(RMySQL)
+
+con <- dbConnect(MySQL(),
+                 user = "root",
+                 pwd = "faiza7860",
+                 dbname="RBaseball",
+                 host = "127.0.0.1",
+                 port=3306)
+
+
+
+```
+
+This we can do by changing the code chunk so that it incorporates "sql", as well as the connection to our database.
+We can then run a query. The output of this query will be saved in a data frame "DAT" as specified in the code chunk.
+```{sql, connection = con, output.var= "DAT"}
+
+SELECT Date, parkID, visitingteam, hometeam, VisitorRunsScored, HomeRunsScore
+FROM (gamelogs)
+WHERE (hometeam="COL" OR visitingteam="COL") AND Date > 20170402
+
+
+```
+
+Now we can manipulate and analyze our DAT dataframe like we would any other dataframe. 
+```{r}
+
+head(DAT)
+str(DAT)
+
+
+DAT$runs <- DAT$VisitorRunsScored + DAT$HomeRunsScore
+
+library(ggplot2)
+DAT$coors <- DAT$parkID=='DEN02'
+
+ggplot(aes(x=substr(Date,1, 4), y=runs, col=coors), data=DAT) + 
+  stat_summary(fun.data="mean_cl_boot") + xlab("season") + 
+  ylab("runs per game (combined for both teams") + 
+  scale_color_discrete(name="location", labels=c("other field", "Coors (home) field"))+
+  ggtitle("Evaluating Rockies' performance at Home field vs. Other fields")
+
+
+
+ggplot(aes(x=substr(Date,1, 4), y=runs, col=coors), data=DAT) +
+  geom_boxplot() + scale_color_discrete(name="location", labels=c("other field", "Coors (home) field"))+
+  ylab("runs per game (combined for both teams") + xlab("season") + ggtitle("Evaluating Rockies' performance at Home field vs. Other fields ")
+
+
+
+```
+
