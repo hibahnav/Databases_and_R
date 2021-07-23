@@ -15,6 +15,7 @@ con <- dbConnect(MySQL(),
                  host = "127.0.0.1",
                  port=3306)
 
+#note: the password has been starred out
 
 
 ```
