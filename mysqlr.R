@@ -5,11 +5,11 @@ library(RMySQL)
 
 con <- dbConnect(MySQL(),
                  user = "root",
-                 pwd = "faiza7860",
+                 pwd = "*****",
                  dbname="RBaseball",
                  host = "127.0.0.1",
                  port=3306)
-
+#NOTE: password has been starred out
 
 #Downloading and extracting data from .zip folder
 load.gamelog <- function(period, season){
